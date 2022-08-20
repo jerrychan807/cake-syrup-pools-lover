@@ -1,0 +1,16 @@
+bsc:
+  #  rpcUrl: "https://bsc.mytokenpocket.vip"
+  rpcUrl: "https://bsc-dataseed2.defibit.io"
+  pancakeRouterAddr: "0x10ED43C718714eb63d5aA57B78B54704E256024E"
+  bnbContractAddr: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+  usdtContractAddr: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+  cakeContractAddr: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"
+
+telegram:
+  token:
+
+project:
+  chatIdFile: "./tmp/tg_user.data"
+  # 指向的我们即将创建的数据库的文件
+  bcPath: "./tmp"
+  bcFile: "./tmp/MANIFEST"
