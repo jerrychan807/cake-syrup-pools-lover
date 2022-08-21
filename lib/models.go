@@ -38,6 +38,9 @@ type SyrupPool struct {
 	RewardPerBlock       string     // 每区块奖励的token数量
 	RewardDailyEarnUsd   *big.Float // 一天可以产出的U
 	HundredCakeDailyEarn *big.Float // 100cake每日可赚取多少u
+	HundredCakeWeekEarn  *big.Float // 100cake每周可赚取多少u
+	HundredCakeMonthEarn *big.Float // 100cake每月可赚取多少u
+	HundredCakeYearEarn  *big.Float // 100cake每年可赚取多少u
 	AaccTokenPerShare    string     // 区间单位token奖励数量 累加值
 	StakedCake           string     // 池子cake总质押数量
 	Token                Token      // 奖励Token

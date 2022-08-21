@@ -58,11 +58,14 @@ func (syrupPool *SyrupPool) GetSyrupPoolInfo(syrupPoolAddr string) {
 	syrupPool.EndTime = BonusEndBlockNumUTCTime.Format("2006-01-02 15:04:05")
 	// 每个用户质押cake限额
 	syrupPool.LimitPerUser = GetSyrupPoolLimitPerUser(syrupPoolIns)
-	// 每区块奖励的token数量
-	syrupPool.RewardPerBlock = GetSyrupPoolRewardPerBlock(syrupPoolIns)
 	// 奖励token的合约地址
 	syrupPool.Token.ContractAddr = GetSyrupPoolRewardTokenContractAddr(syrupPoolIns)
-	fmt.Printf("[*] syrupPool.Token.ContractAddr: %s \n", syrupPool.Token.ContractAddr)
+	// Token精度 小数位
+	syrupPool.Token.Decimals = GetErc20TokenDecimals(syrupPool.Token.ContractAddr)
+	// 每区块奖励的token数量
+	syrupPool.RewardPerBlock = GetSyrupPoolRewardPerBlock(syrupPoolIns, syrupPool.Token.Decimals)
+
+	//fmt.Printf("[*] syrupPool.Token.ContractAddr: %s \n", syrupPool.Token.ContractAddr)
 }
 
 // @title 计算糖浆池每日可产生多少矿币对应的usd
@@ -83,7 +86,7 @@ func (syrupPool *SyrupPool) CalcRewadTokenDailyEarn() {
 	rewardDailyEarnUsd := new(big.Float)
 	rewardDailyEarnUsd = rewardDailyEarnUsd.Mul(rewardDailyTokenNum, syrupPool.Token.Price)
 	syrupPool.RewardDailyEarnUsd = rewardDailyEarnUsd
-	fmt.Println("******* rewardDailyEarnUsd *********")
+	fmt.Printf("%s","[*] rewardDailyEarnUsd  ")
 	fmt.Println(rewardDailyEarnUsd)
 	//return rewardDailyEarnUsd
 }
@@ -94,6 +97,7 @@ func (syrupPool *SyrupPool) CalcRewadTokenDailyEarn() {
 // @param
 // @return
 func (syrupPool *SyrupPool) CalcHundredCakeDailyEarn() {
+	var prec uint = 1024 // 512
 	// 糖浆池总质押的cake数量
 	syrupPool.StakedCake = QueryAddrCakeBalance(syrupPool.ContractAddr)
 	stakedCake := new(big.Float)
@@ -107,7 +111,19 @@ func (syrupPool *SyrupPool) CalcHundredCakeDailyEarn() {
 	// 糖浆池100cake每日可赚取多少u
 	HundredCakeDailyEarn := syrupPool.RewardDailyEarnUsd.Mul(syrupPool.RewardDailyEarnUsd, rate)
 	syrupPool.HundredCakeDailyEarn = HundredCakeDailyEarn
-	fmt.Println("******* HundredCakeDailyEarn *********")
+	// 每周可赚取多少u
+	WeekFloat, _ := new(big.Float).SetPrec(prec).SetString("7")
+	tmp := new(big.Float).SetPrec(prec)
+	syrupPool.HundredCakeWeekEarn = tmp.Mul(HundredCakeDailyEarn, WeekFloat)
+	// 每月可赚取多少u
+	MonthFloat, _ := new(big.Float).SetPrec(prec).SetString("30")
+	tmp = new(big.Float).SetPrec(prec)
+	syrupPool.HundredCakeMonthEarn = tmp.Mul(HundredCakeDailyEarn, MonthFloat)
+	// 每年可赚取多少u
+	YearFloat, _ := new(big.Float).SetPrec(prec).SetString("365")
+	tmp = new(big.Float).SetPrec(prec)
+	syrupPool.HundredCakeYearEarn = tmp.Mul(HundredCakeDailyEarn, YearFloat)
+	fmt.Println("%s","[*] HundredCakeDailyEarn  ")
 	fmt.Println(HundredCakeDailyEarn)
 
 }
@@ -120,18 +136,19 @@ func GetSyrupPoolStartBlock(syrupPoolIns *syrupPool.SyrupPool) uint64 {
 		log.Fatal(err)
 	}
 	sBlock := startBlock.Uint64()
-	fmt.Printf("[*] startBlock: %d\n", startBlock)
+	//fmt.Printf("[*] startBlock: %d\n", startBlock)
 	return sBlock
 }
 
 // @title 查询糖浆池合约的每区块奖励的token数量
 // @param syrupPoolIns *syrupPool.SyrupPool "糖浆池合约实例"
-func GetSyrupPoolRewardPerBlock(syrupPoolIns *syrupPool.SyrupPool) string {
+func GetSyrupPoolRewardPerBlock(syrupPoolIns *syrupPool.SyrupPool, decimal uint8) string {
 	rewardBlockWei, err := syrupPoolIns.RewardPerBlock(&bind.CallOpts{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	rewardBlock := util.WeiToEther(rewardBlockWei)
+	rewardBlock := util.WeiToEtherSpecificDecimal(rewardBlockWei, decimal)
+	//rewardBlock := util.WeiToEther(rewardBlockWei)
 	fmt.Printf("[*] rewardBlock: %s \n", rewardBlock)
 	return rewardBlock
 }
@@ -143,7 +160,7 @@ func GetSyrupPoolRewardTokenContractAddr(syrupPoolIns *syrupPool.SyrupPool) stri
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("[*] rewardTokenContractAddr: %s\n", rewardTokenContractAddr)
+	//fmt.Printf("[*] rewardTokenContractAddr: %s\n", rewardTokenContractAddr)
 	return rewardTokenContractAddr.String()
 }
 
@@ -155,7 +172,7 @@ func GetSyrupPoolBonusEndBlock(syrupPoolIns *syrupPool.SyrupPool) uint64 {
 		log.Fatal(err)
 	}
 	blockNum64 := blockNum.Uint64()
-	fmt.Printf("[*] bonusEndBlock: %d\n", blockNum64)
+	//fmt.Printf("[*] bonusEndBlock: %d\n", blockNum64)
 	return blockNum64
 }
 
@@ -167,7 +184,7 @@ func GetSyrupPoolLimitPerUser(syrupPoolIns *syrupPool.SyrupPool) string {
 		log.Fatal(err)
 	}
 	limitEther := util.WeiToEther(limitWei)
-	fmt.Printf("[*] limitEther: %d\n", limitEther)
+	//fmt.Printf("[*] limitEther: %d\n", limitEther)
 	return limitEther
 }
 
@@ -205,7 +222,7 @@ func GetBlockTime(blockNum uint64) uint64 {
 	//fmt.Println(block.Hash().Hex())          // 0x9e8751ebb5069389b855bba72d94902cc385042661498a415979b7b6ee9ba4b9
 	//fmt.Println(len(block.Transactions()))   // 144
 	tUnix := block.Time()
-	fmt.Printf("[*] tUnix: %d\n", tUnix)
+	//fmt.Printf("[*] tUnix: %d\n", tUnix)
 	return tUnix
 }
 

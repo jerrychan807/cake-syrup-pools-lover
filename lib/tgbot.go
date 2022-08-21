@@ -82,7 +82,7 @@ func (SyrupPools *SyrupPools) GenerateTgMsg() string {
 		msgStr = msgStr + "===============\n"
 		sPool := SyrupPools.SyPools[index]
 		// 保留4位小数
-		sPoolStr := fmt.Sprintf("糖浆池ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("奖励代币名称:   %s", sPool.Token.Name) + "\n" + fmt.Sprintf("代币符号:   %s", sPool.Token.Symbol) + "\n" + fmt.Sprintf("代币价格USD:   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("代币合约地址:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("每日收益USD (100cake):   %s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String())) + "\n" + fmt.Sprintf("总质押cake数量:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n"
+		sPoolStr := fmt.Sprintf("糖浆池ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("奖励代币名称/符号:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("代币价格USD:   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("代币合约地址:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("每日/周/月/年收益USD (100cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("糖浆池总质押cake数量:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("糖浆池结束时间:   %s", sPool.EndTime) + "\n"
 		msgStr = msgStr + sPoolStr
 	}
 	return msgStr

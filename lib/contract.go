@@ -141,7 +141,7 @@ func (t *Token) getAddrBalance(instance *erc20.Erc20, Addr common.Address) strin
 	}
 
 	balance := util.WeiToEther(balanceWei)
-	fmt.Printf("[*] balance: %s \n", balance)
+	//fmt.Printf("[*] balance: %s \n", balance)
 	return balance
 }
 
@@ -224,7 +224,7 @@ func GetTokenPriceByPancakeApi(jsonData string) (string, string, string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Api Json Data After handled: %+v \n", p)
+	fmt.Printf("[*] Api Json Data After handled: %+v \n", p)
 	return p.PancakeApiToken.Name, p.PancakeApiToken.Symbol, p.PancakeApiToken.Price
 }
 
@@ -289,6 +289,16 @@ func QueryErc20TokenInfo(tokenAddr string) Token {
 	//
 	//fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
 	return Erc20Token
+}
+
+func GetErc20TokenDecimals(tokenAddr string) uint8 {
+	var Erc20Token Token
+	AllConfig := GetConfig()
+	client := getRpcClient(AllConfig.RpcUrl)
+	contractAddr := common.HexToAddress(tokenAddr)
+	tokenIns := getTokenInstance(contractAddr, client)
+	return Erc20Token.getTokenDecimals(tokenIns)
+
 }
 
 // @title 查询用户的cake余额

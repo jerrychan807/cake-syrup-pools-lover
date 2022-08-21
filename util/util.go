@@ -137,6 +137,14 @@ func WeiToEther(wei *big.Int) string {
 	sprintf := fmt.Sprintf("%.18f", ether)
 	return sprintf
 }
+func WeiToEtherSpecificDecimal(wei *big.Int, decimals uint8) string {
+	fbal := new(big.Float)
+	fbal.SetString(wei.String())
+	//fmt.Printf("[*] decimals: %d \n", int(decimals))
+	ether := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
+	sprintf := fmt.Sprintf("%.18f", ether)
+	return sprintf
+}
 
 func BigFloatMulBigFloat(s1 string, s2 string) string {
 	f1 := new(big.Float)

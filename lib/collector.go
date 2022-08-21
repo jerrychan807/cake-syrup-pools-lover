@@ -82,7 +82,7 @@ func GenerateSyrupPools(serializedPoolConfigStr string) SyrupPools {
 		// 去掉第一个mastercheif合约
 		if sousIds[i] != "0" {
 			sp := SyrupPool{SousId: sousIds[i], EarningToken: earningTokens[i], ContractAddr: contractAddrs[i], TokenPerBlock: tokenPerBlocks[i]}
-			fmt.Println(sp)
+			//fmt.Println(sp)
 			// 初始化糖浆池数组
 			SyrupPools.SyPools = append(SyrupPools.SyPools, &sp)
 		}
@@ -115,18 +115,20 @@ func (SyrupPools *SyrupPools) UpdateSyrupPoolsTokenInfo() {
 		//fmt.Println("[*] apiFullUrl", apiFullUrl)
 		jsonData := GetPancakeApiJsonData(apiFullUrl)
 		tokenName, tokenSymbol, priceUsd := GetTokenPriceByPancakeApi(jsonData)
+
 		f1 := new(big.Float)
 		f1.SetString(priceUsd)
 		SyrupPools.SyPools[index].Token.Price = f1
 		SyrupPools.SyPools[index].Token.Name = tokenName
 		SyrupPools.SyPools[index].Token.Symbol = tokenSymbol
-		fmt.Printf("[*] syrupPool.Token.Price:%s \n", SyrupPools.SyPools[index].Token.Price)
-		fmt.Println("=================================")
 
-		// 100cake daily earn usd
+		fmt.Printf("[*] syrupPool.Token.Price:%s \n", SyrupPools.SyPools[index].Token.Price.String())
+
+		// 100cake daily earn usd 每日利润usd
 		SyrupPools.SyPools[index].CalcRewadTokenDailyEarn()
 		SyrupPools.SyPools[index].CalcHundredCakeDailyEarn()
 		fmt.Printf("[*] syrupPool %+v \n", SyrupPools.SyPools[index])
+		fmt.Println("=================================")
 		//break
 	}
 

@@ -82,22 +82,26 @@ func (cli *CommandLine) updateSyrupPool() {
 	// 比较md5
 	ifChange := CheckSyrupPoolsContractsChange(SyrupPools.MD5)
 	fmt.Printf("[*] ifChange : %t \n", ifChange)
+
+	// 填充糖浆池信息
+	SyrupPools.UpdateSyrupPoolsTokenInfo()
+
+	//fmt.Println("$$$$$$$$$$$$$$$$$$$$$$")
+	//for _, syrupPool := range SyrupPools.SyPools {
+	//	fmt.Printf("[*] syrupPool %+v \n", syrupPool)
+	//	fmt.Printf("[*] syrupPool.HundredCakeDailyEarn %s \n", syrupPool.HundredCakeDailyEarn.Text('e', 1024))
+	//}
+
+	msg := SyrupPools.GenerateTgMsg()
+	// 更新数据库里的糖浆池信息
+	SaveSyrupPoolStr(msg)
+	fmt.Println("$$$$$$$$$$$ msg $$$$$$$$$$$")
+	fmt.Println(msg)
+
 	// 糖浆池配置信息更新,有新的糖浆池
 	//ifChange = true
-
 	if ifChange {
-		// 填充糖浆池信息
-		SyrupPools.UpdateSyrupPoolsTokenInfo()
 
-		fmt.Println("$$$$$$$$$$$$$$$$$$$$$$")
-		for _, syrupPool := range SyrupPools.SyPools {
-			fmt.Printf("[*] syrupPool %+v \n", syrupPool)
-		}
-
-		msg := SyrupPools.GenerateTgMsg()
-		SaveSyrupPoolStr(msg)
-		fmt.Println("$$$$$$$$$$$ msg $$$$$$$$$$$")
-		fmt.Println(msg)
 		uids := QueryAllChatId()
 		// 发生tg提醒
 		for _, uid := range uids {
