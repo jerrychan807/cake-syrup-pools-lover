@@ -153,8 +153,10 @@ func WriteStrInFile(content string) {
 
 func getLastMd5FilePath() string {
 	fileName := "lastMd5.log"
-	currentPath, _ := os.Getwd()
-	filePath := filepath.Join(currentPath, fileName)
+	AllConfig := GetConfig()
+	//currentPath, _ := os.Getwd()
+	//currentPath := AllConfig.ProjectFolder + fileName
+	filePath := filepath.Join(AllConfig.ProjectFolder, fileName)
 	return filePath
 }
 

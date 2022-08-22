@@ -14,3 +14,4 @@ project:
   # 指向的我们即将创建的数据库的文件
   bcPath: "./tmp"
   bcFile: "./tmp/MANIFEST"
+  projectFolder:

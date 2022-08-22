@@ -25,7 +25,6 @@ func GetConfig() Config {
 	AllConfig.PancakeRouterAddr = viper.GetString("bsc.pancakeRouterAddr")
 	AllConfig.UsdtContractAddr = viper.GetString("bsc.usdtContractAddr")
 	AllConfig.CakeContractAddr = viper.GetString("bsc.cakeContractAddr")
-	AllConfig.ProjectFolder = viper.GetString("bsc.projectFolder")
 	// TgBot配置
 	AllConfig.TgToken = viper.GetString("telegram.token")
 	// Database配置
@@ -33,6 +32,7 @@ func GetConfig() Config {
 	AllConfig.BcFile = viper.GetString("project.bcFile")
 	AllConfig.ChatIdFile = viper.GetString("project.chatIdFile")
 
+	AllConfig.ProjectFolder = viper.GetString("project.projectFolder")
 	//fmt.Printf("Viper get rpcUrl config -->%s \n", AllConfig.RpcUrl)
 	return AllConfig
 }
