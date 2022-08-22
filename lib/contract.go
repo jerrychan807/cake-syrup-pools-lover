@@ -8,46 +8,15 @@ import (
 	"encoding/json"
 	"github.com/gocolly/colly"
 
-	//Token "cake-syrup-pools-lover/types"
-	"context"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
-	"math"
 	"math/big"
 )
 
-func QueryBalance() {
-	client, err := ethclient.Dial("https://bsc.mytokenpocket.vip")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	account := common.HexToAddress("0x6d80fdaa5cdbff3db45a853d41d779509da85da3")
-	balance, err := client.BalanceAt(context.Background(), account, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(balance) // 25893180161173005034
-
-	blockNumber := big.NewInt(5532993)
-	balanceAt, err := client.BalanceAt(context.Background(), account, blockNumber)
-	if err != nil {
-		log.Fatal(err)
-	}
-	//fmt.Println(balanceAt) // 25729324269165216042
-	//
-	fbalance := new(big.Float)
-	fbalance.SetString(balanceAt.String())
-	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-	fmt.Println(ethValue) // 25.729324269165216041
-	//
-	//pendingBalance, err := client.PendingBalanceAt(context.Background(), account)
-	//fmt.Println(pendingBalance) // 25729324269165216042
-}
-
+// @title 获得Rpc客户端实例
 func getRpcClient(rpcUrl string) *ethclient.Client {
 	client, err := ethclient.Dial(rpcUrl)
 	if err != nil {
@@ -56,8 +25,7 @@ func getRpcClient(rpcUrl string) *ethclient.Client {
 	return client
 }
 
-// @title
-// @description 获取erc20Token的一个contract实例
+// @title 获取erc20Token的一个contract实例
 // @param client *ethclient.Client "rpc连接client"
 func getTokenInstance(contractAddr common.Address, client *ethclient.Client) *erc20.Erc20 {
 	instance, err := erc20.NewErc20(contractAddr, client)
@@ -67,8 +35,7 @@ func getTokenInstance(contractAddr common.Address, client *ethclient.Client) *er
 	return instance
 }
 
-// @title
-// @description 获取pancakeRouter的一个contract实例
+// @title 获取pancakeRouter的一个contract实例
 func getRouterContractInstance(contractAddr common.Address, client *ethclient.Client) *pancakeRouter.PancakeRouter {
 	instance, err := pancakeRouter.NewPancakeRouter(contractAddr, client)
 	if err != nil {
@@ -77,8 +44,7 @@ func getRouterContractInstance(contractAddr common.Address, client *ethclient.Cl
 	return instance
 }
 
-// @title
-// @description 获取SyrupPool的一个contract实例
+// @title 获取SyrupPool的一个contract实例
 func GetSyrupPoolContractInstance(contractAddr common.Address, client *ethclient.Client) *syrupPool.SyrupPool {
 	instance, err := syrupPool.NewSyrupPool(contractAddr, client)
 	if err != nil {
@@ -87,8 +53,7 @@ func GetSyrupPoolContractInstance(contractAddr common.Address, client *ethclient
 	return instance
 }
 
-// @title
-// @description 获取erc20Token的代币名称
+// @title 查询erc20Token的代币名称
 // @param instance *erc20.Erc20 "erc20实例"
 func (t *Token) getTokenName(instance *erc20.Erc20) string {
 	name, err := instance.Name(&bind.CallOpts{})
@@ -108,7 +73,7 @@ func (t *Token) getTokenSymbol(instance *erc20.Erc20) string {
 	return symbol
 }
 
-// @title 查询erc20Token的小数点
+// @title 查询erc20Token的精度/小数点
 // @param instance *erc20.Erc20 "erc20实例"
 func (t *Token) getTokenDecimals(instance *erc20.Erc20) uint8 {
 	decimals, err := instance.Decimals(&bind.CallOpts{})
@@ -131,8 +96,7 @@ func (t *Token) getTokenPriceUsd(instance *erc20.Erc20) uint8 {
 }
 */
 
-// @title
-// @description 查询某地址的erc20Token余额
+// @title 查询某地址的erc20Token余额
 // @param instance *erc20.Erc20 "erc20实例"
 func (t *Token) getAddrBalance(instance *erc20.Erc20, Addr common.Address) string {
 	balanceWei, err := instance.BalanceOf(&bind.CallOpts{}, Addr)
@@ -145,9 +109,8 @@ func (t *Token) getAddrBalance(instance *erc20.Erc20, Addr common.Address) strin
 	return balance
 }
 
-// @title 通过pancakeSwapContract 计算出BnbPrice
+// @title 通过pancakeSwapContract的GetAmountsOut方法 计算出BnBPrice
 // @description Refs: https://gist.github.com/Linch1/ede03999f483f2b1d5fcac9e8b312f2c
-// @param
 func CalcBNBPriceByPancakeSwap() string {
 	AllConfig := GetConfig()
 	client := getRpcClient(AllConfig.RpcUrl)
@@ -178,9 +141,9 @@ func CalcBNBPriceByPancakeSwap() string {
 	return bnbPriceUsd
 }
 
-// @title 通过pancakeSwapContract 计算出BnbPrice
+// @title 通过pancakeSwapContract 计算出代币的价格Usd
 // @description Refs: https://gist.github.com/Linch1/ede03999f483f2b1d5fcac9e8b312f2c
-// @param shitTokenAddr string "erc20实例"
+// @param shitTokenAddr string "代币合约地址"
 func CalcTokenPriceByPancakeSwap(shitTokenAddr string) string {
 	AllConfig := GetConfig()
 	client := getRpcClient(AllConfig.RpcUrl)
@@ -212,7 +175,7 @@ func CalcTokenPriceByPancakeSwap(shitTokenAddr string) string {
 	return shitTokenPriceBnb
 }
 
-// @title 通过pancakeSwapApi 查询出Token价格
+// @title 通过pancakeSwapApi 查询出Token信息:名称/符号/价格
 // @description Refs: https://api.pancakeswap.info/api/v2/tokens/0xc84c177ac200461e6a7208a3a1073538036d0779
 // https://stackoverflow.com/questions/53293506/how-to-handle-response-json-have-custom-field-with-out-key
 // @param jsonData string "API返回的json数据"
@@ -228,6 +191,7 @@ func GetTokenPriceByPancakeApi(jsonData string) (string, string, string) {
 	return p.PancakeApiToken.Name, p.PancakeApiToken.Symbol, p.PancakeApiToken.Price
 }
 
+// @title 获得PancakeApi返回的json数据
 func GetPancakeApiJsonData(apiFullUrl string) string {
 	c := colly.NewCollector()
 	var jsonData string
@@ -269,6 +233,7 @@ func GetTokenLiquidity(shitTokenAddr string) string {
 }
 */
 
+// @title 查询Erc20Token的信息
 func QueryErc20TokenInfo(tokenAddr string) Token {
 	var Erc20Token Token
 	AllConfig := GetConfig()
@@ -291,6 +256,8 @@ func QueryErc20TokenInfo(tokenAddr string) Token {
 	return Erc20Token
 }
 
+// @title 查询Erc20Token的精度/小数点
+// @param tokenAddr string "代币合约地址"
 func GetErc20TokenDecimals(tokenAddr string) uint8 {
 	var Erc20Token Token
 	AllConfig := GetConfig()
@@ -302,7 +269,7 @@ func GetErc20TokenDecimals(tokenAddr string) uint8 {
 }
 
 // @title 查询用户的cake余额
-// @param shitTokenAddr string "代币合约地址"
+// @param userAddr string "钱包/合约地址"
 func QueryAddrCakeBalance(userAddr string) string {
 	var Cake Token
 	AllConfig := GetConfig()

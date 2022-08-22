@@ -15,7 +15,7 @@ import (
 )
 
 // @title 返回rpcUrl
-// @description 读取配置,返回rpcUrl
+// @description 读取配置,返回配置结构体
 func GetConfig() Config {
 	var AllConfig Config
 	config.InitConfig()
@@ -94,8 +94,6 @@ func (syrupPool *SyrupPool) CalcRewadTokenDailyEarn() {
 // @title 计算糖浆池100cake每日可赚取多少u
 // @description 矿币一天可以产出的U = 一天区块数 * 每区块奖励的token数量 * token价格
 // refs: https://bsctools.xyz/pancakeswap/pools/
-// @param
-// @return
 func (syrupPool *SyrupPool) CalcHundredCakeDailyEarn() {
 	var prec uint = 1024 // 512
 	// 糖浆池总质押的cake数量
@@ -142,6 +140,7 @@ func GetSyrupPoolStartBlock(syrupPoolIns *syrupPool.SyrupPool) uint64 {
 
 // @title 查询糖浆池合约的每区块奖励的token数量
 // @param syrupPoolIns *syrupPool.SyrupPool "糖浆池合约实例"
+// @param decimal uint8 "代币精度"
 func GetSyrupPoolRewardPerBlock(syrupPoolIns *syrupPool.SyrupPool, decimal uint8) string {
 	rewardBlockWei, err := syrupPoolIns.RewardPerBlock(&bind.CallOpts{})
 	if err != nil {
@@ -176,7 +175,7 @@ func GetSyrupPoolBonusEndBlock(syrupPoolIns *syrupPool.SyrupPool) uint64 {
 	return blockNum64
 }
 
-// @title 查询糖浆池合约里的LimitPerUser  每个用户质押cake限额
+// @title 查询糖浆池合约里的LimitPerUser 每个用户质押cake限额
 // @param syrupPoolIns *syrupPool.SyrupPool "糖浆池合约实例"
 func GetSyrupPoolLimitPerUser(syrupPoolIns *syrupPool.SyrupPool) string {
 	limitWei, err := syrupPoolIns.PoolLimitPerUser(&bind.CallOpts{})

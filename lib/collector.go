@@ -12,9 +12,9 @@ import (
 	"regexp"
 )
 
-// http请求 https://github.com/pancakeswap/pancake-frontend/blob/develop/src/config/constants/pools.tsx
-// 糖浆池池子信息在livePools: SerializedPoolConfig[]
-// 从pools.tsx的response body匹配出糖浆池配置字符串
+// @title 从pools.tsx的response body匹配出糖浆池配置字符串
+// @description 1.https请求 https://github.com/pancakeswap/pancake-frontend/blob/develop/src/config/constants/pools.tsx
+// 2.糖浆池池子信息在livePools: SerializedPoolConfig[]
 func GetSerializedPoolConfigStr(url string) string {
 	c := colly.NewCollector()
 	var serializedPoolConfigStr string
@@ -38,7 +38,7 @@ func GetSerializedPoolConfigStr(url string) string {
 	return serializedPoolConfigStr
 }
 
-// @title 获取糖浆池信息: 100个cake每天可以几美元
+// @title 获取糖浆池信息
 // @description 解析糖浆池配置列表,得到糖浆池信息
 func GetSyrupPoolsByBscToolsWeb(url string) string {
 	c := colly.NewCollector()
@@ -93,7 +93,6 @@ func GenerateSyrupPools(serializedPoolConfigStr string) SyrupPools {
 
 // @title 生成md5
 // @description 糖浆池数组的ContractAddr列表,生成此次糖浆池配置信息的MD5哈希值
-// @param serializedPoolConfigStr string "糖浆池配置列表"
 func (SyrupPools *SyrupPools) CalcSyrupPoolsMd5() {
 	var baseStr string
 	for _, syrupPool := range SyrupPools.SyPools {
@@ -104,6 +103,8 @@ func (SyrupPools *SyrupPools) CalcSyrupPoolsMd5() {
 	fmt.Printf("[*] SyrupPools.MD5 : %s \n", SyrupPools.MD5)
 }
 
+// @title 填充糖浆池信息
+// @description 1.获取token价格 2.计算出Roi 投资回报率
 func (SyrupPools *SyrupPools) UpdateSyrupPoolsTokenInfo() {
 	for index, _ := range SyrupPools.SyPools {
 		fmt.Println("=================================")
@@ -151,6 +152,7 @@ func WriteStrInFile(content string) {
 	dstFile.WriteString(content)
 }
 
+// @title 获得md5文件的路径
 func getLastMd5FilePath() string {
 	fileName := "lastMd5.log"
 	AllConfig := GetConfig()

@@ -117,7 +117,7 @@ func QueryChatId(userId int) int {
 	return uid
 }
 
-// @title 查询TgUser的Id
+// @title 查询全部TgUser的Id
 func QueryAllChatId() []int {
 	var db = GetDbIns()
 	defer db.Close()
