@@ -76,12 +76,20 @@ Blog: [Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录](ht
    ```sh
    go mod tidy
    ```
-4. Enter your TgBot Token in `config.yaml`
+4. Enter your TgBot Token in `config.yaml` and Edit ConfigPath
    ```sh
    cp config/config.yaml.bak config/config.yaml
    ```
    ```sh
    vim config/config.yaml
+   # Edit these lines
+   # token :
+   # projectFolder: 
+   ```
+   ```sh
+   vim config/config.go
+   # Edit this line
+   viper.AddConfigPath("/jcoin/cake-syrup-pools-lover/config")
    ```
 5. Init File and Folder
    ```sh
