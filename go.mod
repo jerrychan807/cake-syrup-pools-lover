@@ -8,7 +8,6 @@ require (
 	github.com/gocolly/colly v1.2.0
 	github.com/shopspring/decimal v1.3.1
 	github.com/spf13/viper v1.12.0
-	gopkg.in/telebot.v3 v3.0.0
 	gopkg.in/tucnak/telebot.v2 v2.5.0
 )
 
