@@ -31,9 +31,12 @@ func TgBotStartServer() {
 		SaveChatId(int(m.Sender.ID))
 	})
 
-	b.Handle("/subscribe_all", func(m *tb.Message) {
-		b.Send(m.Sender, "Try to query all chatId")
-		QueryAllChatId()
+	// 查询订阅人数
+	b.Handle("/subscribe_nums", func(m *tb.Message) {
+		uids := QueryAllChatId()
+		msgStr := fmt.Sprintf("subscribes num: %d", len(uids))
+		b.Send(m.Sender, msgStr)
+		fmt.Println(uids)
 	})
 
 	// 查询糖浆池信息订阅是否成功
@@ -77,12 +80,12 @@ func TgBotSendMsgToUser(userId int, msgStr string) {
 func (SyrupPools *SyrupPools) GenerateTgMsg() string {
 	var msgStr string
 	nowStr := time.Now().Format("2006-01-02 15:04:05") //获取当前时间
-	msgStr = msgStr + "数据更新时间: " + nowStr + "\n"
+	msgStr = msgStr + "Updated at: " + nowStr + "\n"
 	for index, _ := range SyrupPools.SyPools {
 		msgStr = msgStr + "===============\n"
 		sPool := SyrupPools.SyPools[index]
 		// 保留4位小数
-		sPoolStr := fmt.Sprintf("糖浆池ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("奖励代币名称/符号:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("代币价格USD:   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("代币合约地址:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("每日/周/月/年收益USD (100cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("糖浆池总质押cake数量:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("糖浆池结束时间:   %s", sPool.EndTime) + "\n"
+		sPoolStr := fmt.Sprintf("SyrupPool ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("RewardToken Name/Symbol:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("RewardToken Price(USD):   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("RewardToken ContractAddr:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("Daily/Weekly/Monthly/Yearly Profit(USD)(Per100Cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("SyrupPool TotalStaked Cake:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("SyrupPool EndTime:   %s", sPool.EndTime) + "\n"
 		msgStr = msgStr + sPoolStr
 	}
 	return msgStr
