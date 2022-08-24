@@ -59,26 +59,31 @@ func SaveChatId(userId int) {
 }
 
 // @title 存储SyrupPool信息
-func SaveSyrupPoolStr(poolMsg string) {
+// @param key string "键值pools/pools_shortly"
+// @param poolMsg string "通知信息"
+func SaveSyrupPoolStr(key string, poolMsg string) {
+	fmt.Println("[*] Try to update New SyrupPool Msg")
 	var db = GetDbIns()
 	defer db.Close()
 	// 对Badger数据库进行更新操作
 	err := db.Update(func(txn *badger.Txn) error {
 		// Key值:固定字符串 pools，Value:poolMsg
-		err := txn.Set([]byte("pools"), []byte(poolMsg))
+		err := txn.Set([]byte(key), []byte(poolMsg))
 		return err
 	})
 	util.Handle(err)
 }
 
 // @title 查询SyrupPool信息
-func QuerySyrupPoolStr() string {
+// @param key string "键值pools/pools_shortly"
+// @return poolMsg string "池子信息"
+func QuerySyrupPoolStr(key string) string {
 	var db = GetDbIns()
 	defer db.Close()
 	var poolMsg string
 	// get
 	err := db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte("pools"))
+		item, err := txn.Get([]byte(key))
 		util.Handle(err)
 		err = item.Value(func(val []byte) error {
 			poolMsg = string(val)
@@ -93,6 +98,8 @@ func QuerySyrupPoolStr() string {
 }
 
 // @title 查询TgUser的Id
+// @param userId int "键值"
+// @return uid int "用户id"
 func QueryChatId(userId int) int {
 	var db = GetDbIns()
 	defer db.Close()
@@ -134,7 +141,7 @@ func QueryAllChatId() []int {
 			k := item.Key()
 			uid, _ := strconv.Atoi(string(k))
 			uids = append(uids, uid)
-			//fmt.Printf("key= %s\n", k)
+			fmt.Printf("key= %s\n", k)
 		}
 		return nil
 	})

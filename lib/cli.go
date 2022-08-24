@@ -92,20 +92,29 @@ func (cli *CommandLine) updateSyrupPool() {
 	//	fmt.Printf("[*] syrupPool.HundredCakeDailyEarn %s \n", syrupPool.HundredCakeDailyEarn.Text('e', 1024))
 	//}
 
-	msg := SyrupPools.GenerateTgMsg()
+	// 生成通知信息
+	msg := SyrupPools.GenerateTgFullMsg()
+	smsg := SyrupPools.GenerateTgShortlyMsg()
 	// 更新数据库里的糖浆池信息
-	SaveSyrupPoolStr(msg)
-	fmt.Println("$$$$$$$$$$$ msg $$$$$$$$$$$")
-	fmt.Println(msg)
+	// 完整信息模板
+	SaveSyrupPoolStr("pools", msg)
+	// 简要信息模板
+	SaveSyrupPoolStr("pools_shortly", smsg)
 
-	// 糖浆池配置信息更新,有新的糖浆池
-	//ifChange = true
+	fmt.Println("$$$$$$$$$$$ smsg $$$$$$$$$$$")
+	fmt.Println(smsg)
+
+	// 糖浆池配置信息更新(合约地址有变动),有新的糖浆池
+	// ifChange = true
 	if ifChange {
 
 		uids := QueryAllChatId()
 		// 发生tg提醒
+		fmt.Println(uids)
+
 		for _, uid := range uids {
-			TgBotSendMsgToUser(uid, msg)
+			fmt.Printf("[*] new pool, try to alert user: %d", uid)
+			TgBotSendMsgToUser(uid, smsg)
 		}
 		// 记录本次md5
 		WriteStrInFile(SyrupPools.MD5)

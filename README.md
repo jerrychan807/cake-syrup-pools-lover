@@ -109,8 +109,9 @@ Blog: [Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录](ht
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Calculate Apr
-- [ ] Feature XXX
+- [ ] Input Address,query portfolio
+- [ ] Calculate Apr  
+- [ ] FeatureXXX
 
 
 

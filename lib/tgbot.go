@@ -47,9 +47,15 @@ func TgBotStartServer() {
 		b.Send(m.Sender, msgStr)
 	})
 
-	// 查询最新糖浆池信息
-	b.Handle("/syrup_pools", func(m *tb.Message) {
-		poolMsg := QuerySyrupPoolStr()
+	// 查询最新糖浆池-简要信息
+	b.Handle("/syrup_pools_shortly", func(m *tb.Message) {
+		poolMsg := QuerySyrupPoolStr("pools_shortly")
+		b.Send(m.Sender, poolMsg)
+	})
+
+	// 查询最新糖浆池-完整信息
+	b.Handle("/syrup_pools_full", func(m *tb.Message) {
+		poolMsg := QuerySyrupPoolStr("pools")
 		b.Send(m.Sender, poolMsg)
 	})
 
@@ -77,7 +83,9 @@ func TgBotSendMsgToUser(userId int, msgStr string) {
 	b.Send(&user, msgStr)
 }
 
-func (SyrupPools *SyrupPools) GenerateTgMsg() string {
+// @title 生成完整的通知模板
+// @return msgStr string "完整的糖浆池信息"
+func (SyrupPools *SyrupPools) GenerateTgFullMsg() string {
 	var msgStr string
 	nowStr := time.Now().Format("2006-01-02 15:04:05") //获取当前时间
 	msgStr = msgStr + "Updated at: " + nowStr + "\n"
@@ -87,6 +95,22 @@ func (SyrupPools *SyrupPools) GenerateTgMsg() string {
 		// 保留4位小数
 		sPoolStr := fmt.Sprintf("SyrupPool ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("RewardToken Name/Symbol:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("RewardToken Price(USD):   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("RewardToken ContractAddr:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("Daily/Weekly/Monthly/Yearly Profit(USD)(Per100Cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("SyrupPool TotalStaked Cake:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("SyrupPool EndTime:   %s", sPool.EndTime) + "\n"
 		msgStr = msgStr + sPoolStr
+	}
+	return msgStr
+}
+
+// @title 生成简要的通知模板
+// @description 基于需求:大多数时间关注的是一些关键的信息,少部分时间会需要查询更完整的细节信息
+// @return msgStr string "简要的信息:Token名称、每周期收益"
+func (SyrupPools *SyrupPools) GenerateTgShortlyMsg() string {
+	var msgStr string
+	nowStr := time.Now().Format("2006-01-02 15:04:05") //获取当前时间
+	msgStr = msgStr + "Updated at: " + nowStr + "\n"
+	for index, _ := range SyrupPools.SyPools {
+		msgStr += "===============\n"
+		sPool := SyrupPools.SyPools[index]
+		sPoolStr := fmt.Sprintf("RewardToken Name/Symbol:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("Profit(USD)(Per100Cake):   ") + "\n" + fmt.Sprintf("Daily:   %s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String())) + "\n" + fmt.Sprintf("Weekly:   %s", util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String())) + "\n" + fmt.Sprintf("Monthly:   %s", util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String())) + "\n" + fmt.Sprintf("Yearly :   %s", util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n"
+		msgStr += sPoolStr
 	}
 	return msgStr
 }
