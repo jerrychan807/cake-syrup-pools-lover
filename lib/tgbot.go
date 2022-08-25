@@ -4,7 +4,11 @@ import (
 	"cake-syrup-pools-lover/util"
 	"fmt"
 	tb "gopkg.in/tucnak/telebot.v2"
+	//"github.com/tucnak/telebot"
+	"image"
 	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -47,10 +51,13 @@ func TgBotStartServer() {
 		b.Send(m.Sender, msgStr)
 	})
 
-	// 查询最新糖浆池-简要信息
-	b.Handle("/syrup_pools_shortly", func(m *tb.Message) {
-		poolMsg := QuerySyrupPoolStr("pools_shortly")
-		b.Send(m.Sender, poolMsg)
+	// 查询最新糖浆池-发送糖浆池日收益的饼状图
+	b.Handle("/syrup_pools_pie", func(m *tb.Message) {
+		//poolMsg := QuerySyrupPoolStr("pools_shortly")
+		AllConfig := GetConfig()
+		picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
+		img := &tb.Photo{File: tb.FromDisk(picSavePath)}
+		b.Send(m.Sender, img)
 	})
 
 	// 查询最新糖浆池-完整信息
@@ -61,6 +68,20 @@ func TgBotStartServer() {
 
 	fmt.Println("[*] TgBot StartServer!!!")
 	b.Start()
+}
+
+func getImageDimension(imagePath string) (int, int, error) {
+	file, err := os.Open(imagePath)
+	if err != nil {
+		return 0, 0, err
+	}
+	defer file.Close()
+
+	image, _, err := image.DecodeConfig(file)
+	if err != nil {
+		return 0, 0, err
+	}
+	return image.Width, image.Height, nil
 }
 
 func TgBotSendMsgToUser(userId int, msgStr string) {

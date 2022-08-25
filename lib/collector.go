@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math/big"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -61,6 +62,33 @@ func GetSyrupPoolsByBscToolsWeb(url string) string {
 
 	c.Visit(url)
 	return serializedPoolConfigStr
+}
+
+// @title 保存rose PieChart图片
+// @description 使用本地的http和html2img服务,生成图片,保存在download文件夹中
+func GetSyrupPoolsDailyEarnPieImage(url string) string {
+	//pic := base
+	//idx := strings.LastIndex(url, "/")
+	AllConfig := GetConfig()
+	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
+
+	v, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("Http get [%v] failed! %v", url, err)
+		log.Fatal(err)
+	}
+	defer v.Body.Close()
+	content, err := ioutil.ReadAll(v.Body)
+	if err != nil {
+		fmt.Printf("Read http response failed! %v", err)
+		log.Fatal(err)
+	}
+	err = ioutil.WriteFile(picSavePath, content, 0666)
+	if err != nil {
+		fmt.Printf("Save to file failed! %v", err)
+		log.Fatal(err)
+	}
+	return picSavePath
 }
 
 // @title 获取糖浆池信息

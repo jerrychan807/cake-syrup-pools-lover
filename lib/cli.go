@@ -12,14 +12,15 @@ import (
 type CommandLine struct{}
 
 // 命令行程序首先应打印所有的命令及其用法
-// startserver命令:开启tgBot,接受指令。
-// updatespool命令:1.更新数据库里的Syrup信息 2.有新池则通知所有订阅了的用户
-
+// start_tg_server命令:开启tgBot,接受指令。
+// start_http_server命令:1.更新数据库里的Syrup信息 2.有新池则通知所有订阅了的用户
+//
 func (cli *CommandLine) printUsage() {
 	fmt.Println("Pancake Syrup Pool Lover, usage is as follows:")
 	fmt.Println("--------------------------------------------------------------------------------------------------------------")
-	fmt.Println("startserver  ----> Start tg bot Server")
-	fmt.Println("updatespool  ----> Update Syrup Pool Info,try to send alert to users")
+	fmt.Println("start_tg_server  ----> Start tg bot Server")
+	fmt.Println("start_http_server  ----> Start http Server")
+	fmt.Println("update_pool_msg  ----> Update Syrup Pool Info,try to send alert to users")
 	fmt.Println("onlytest  ----> onlytest")
 	fmt.Println("--------------------------------------------------------------------------------------------------------------")
 }
@@ -35,16 +36,20 @@ func (cli *CommandLine) validateArgs() {
 func (cli *CommandLine) Run() {
 	cli.validateArgs()
 
-	startServerCmd := flag.NewFlagSet("startserver", flag.ExitOnError)
-	updateSyrupPoolCmd := flag.NewFlagSet("updatespool", flag.ExitOnError)
+	startServerCmd := flag.NewFlagSet("start_tg_server", flag.ExitOnError)
+	startHttpServerCmd := flag.NewFlagSet("start_http_server", flag.ExitOnError)
+	updateSyrupPoolMsgCmd := flag.NewFlagSet("update_pool_msg", flag.ExitOnError)
 	//onlyTestCmd := flag.NewFlagSet("onlytest", flag.ExitOnError)
 
 	switch os.Args[1] {
-	case "startserver":
+	case "start_tg_server":
 		err := startServerCmd.Parse(os.Args[2:])
 		util.Handle(err)
-	case "updatespool":
-		err := updateSyrupPoolCmd.Parse(os.Args[2:])
+	case "start_http_server":
+		err := startHttpServerCmd.Parse(os.Args[2:])
+		util.Handle(err)
+	case "update_pool_msg":
+		err := updateSyrupPoolMsgCmd.Parse(os.Args[2:])
 		util.Handle(err)
 	//case "onlytest":
 	//	err := onlyTestCmd.Parse(os.Args[2:])
@@ -57,7 +62,10 @@ func (cli *CommandLine) Run() {
 	if startServerCmd.Parsed() {
 		cli.startServer()
 	}
-	if updateSyrupPoolCmd.Parsed() {
+	if startHttpServerCmd.Parsed() {
+		cli.startHttpServerCmd()
+	}
+	if updateSyrupPoolMsgCmd.Parsed() {
 		cli.updateSyrupPool()
 	}
 	//if onlyTestCmd.Parsed() {
@@ -66,8 +74,11 @@ func (cli *CommandLine) Run() {
 }
 
 func (cli *CommandLine) startServer() {
-
 	TgBotStartServer()
+}
+
+func (cli *CommandLine) startHttpServerCmd() {
+	StartSimpleServer()
 }
 
 func (cli *CommandLine) updateSyrupPool() {
@@ -91,6 +102,11 @@ func (cli *CommandLine) updateSyrupPool() {
 	//	fmt.Printf("[*] syrupPool %+v \n", syrupPool)
 	//	fmt.Printf("[*] syrupPool.HundredCakeDailyEarn %s \n", syrupPool.HundredCakeDailyEarn.Text('e', 1024))
 	//}
+
+	// 生成piechart html文件
+	CreatePieChart(&SyrupPools)
+	picSavePath := GetSyrupPoolsDailyEarnPieImage("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/pie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80")
+	fmt.Printf("[*] Get SyrupPools DailyEarn PieImage : %s \n", picSavePath)
 
 	// 生成通知信息
 	msg := SyrupPools.GenerateTgFullMsg()
