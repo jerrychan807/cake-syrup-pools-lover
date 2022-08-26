@@ -7,11 +7,11 @@ bsc:
   cakeContractAddr: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"
 
 telegram:
-  token:
+  token: ""
 
 project:
   chatIdFile: "./tmp/tg_user.data"
   # 指向的我们即将创建的数据库的文件
   bcPath: "./tmp"
   bcFile: "./tmp/MANIFEST"
-  projectFolder:
+  projectFolder: ""
