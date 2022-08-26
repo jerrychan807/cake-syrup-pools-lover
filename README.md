@@ -41,7 +41,7 @@ Built With [![Go][Go]][React-url]
     薄饼糖浆池-新池提醒/查询-TGBot
     <br />
     <br />
-    <a href="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220822093506.png">View Demo</a>
+    <a href="https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220826171741.png">View Demo</a>
     ·
     <a href="https://github.com/jerrychan807/cake-syrup-pools-lover/issues">Report Bug</a>
     ·
@@ -129,7 +129,7 @@ Blog: [Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录](ht
 [license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220822093506.png
+[product-screenshot]: https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220826171741.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [Go]: https://img.shields.io/badge/Go-v1.18.5-blue
