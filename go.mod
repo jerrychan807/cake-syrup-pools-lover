@@ -7,9 +7,9 @@ require (
 	github.com/ethereum/go-ethereum v1.10.21
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/gocolly/colly v1.2.0
+	github.com/klarkxy/gohtml v0.0.0-20220513090653-4beafb6047e9
 	github.com/shopspring/decimal v1.3.1
 	github.com/spf13/viper v1.12.0
-	github.com/tucnak/telebot v2.0.0+incompatible
 	gopkg.in/tucnak/telebot.v2 v2.5.0
 )
 
@@ -38,7 +38,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
-	github.com/mitchellh/hashstructure v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
