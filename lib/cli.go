@@ -86,8 +86,16 @@ func (cli *CommandLine) updateSyrupPool() {
 	fmt.Printf("[*] Request Url: %s\n", poolsTsxfileUrl)
 	// 获取pancake github上的糖浆池配置列表
 	serializedPoolConfigStr := GetSerializedPoolConfigStr(poolsTsxfileUrl)
+	//fmt.Println(serializedPoolConfigStr)
+
 	// 解析糖浆池配置列表,获取SyrupPool数组
 	SyrupPools := GenerateSyrupPools(serializedPoolConfigStr)
+	//fmt.Println("$$$$$$$$$$$$$$$$$$$$$$")
+	//for _, syrupPool := range SyrupPools.SyPools {
+	//	fmt.Printf("[*] syrupPool %+v \n", syrupPool)
+	//	fmt.Printf("[*] syrupPool.HundredCakeDailyEarn %s \n", syrupPool.HundredCakeDailyEarn.Text('e', 1024))
+	//}
+
 	// 生成此次糖浆池配置信息的MD5哈希值
 	SyrupPools.CalcSyrupPoolsMd5()
 	// 比较md5
@@ -97,40 +105,36 @@ func (cli *CommandLine) updateSyrupPool() {
 	// 填充糖浆池信息
 	SyrupPools.UpdateSyrupPoolsTokenInfo()
 
-	//fmt.Println("$$$$$$$$$$$$$$$$$$$$$$")
-	//for _, syrupPool := range SyrupPools.SyPools {
-	//	fmt.Printf("[*] syrupPool %+v \n", syrupPool)
-	//	fmt.Printf("[*] syrupPool.HundredCakeDailyEarn %s \n", syrupPool.HundredCakeDailyEarn.Text('e', 1024))
-	//}
-
 	// 生成piechart html文件
 	CreatePieChart(&SyrupPools)
-	picSavePath := GetSyrupPoolsDailyEarnPieImage("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/pie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80")
-	fmt.Printf("[*] Get SyrupPools DailyEarn PieImage : %s \n", picSavePath)
+	// 生成糖浆池信息表格html文件
+	GenerateSyrupPoolTableHtml(&SyrupPools)
+	piePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/pie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/pie.png")
+	tablePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/table.html", "/download/table.png")
 
+	fmt.Printf("[*] Get SyrupPools DailyEarn Pie Image : %s \n", piePicSavePath)
+	fmt.Printf("[*] Get SyrupPools table Image : %s \n", tablePicSavePath)
 	// 生成通知信息
 	msg := SyrupPools.GenerateTgFullMsg()
-	smsg := SyrupPools.GenerateTgShortlyMsg()
+	//smsg := SyrupPools.GenerateTgShortlyMsg()
 	// 更新数据库里的糖浆池信息
 	// 完整信息模板
 	SaveSyrupPoolStr("pools", msg)
 	// 简要信息模板
-	SaveSyrupPoolStr("pools_shortly", smsg)
+	//SaveSyrupPoolStr("pools_shortly", smsg)
 
 	fmt.Println("$$$$$$$$$$$ smsg $$$$$$$$$$$")
-	fmt.Println(smsg)
+	fmt.Println(msg)
 
 	// 糖浆池配置信息更新(合约地址有变动),有新的糖浆池
 	// ifChange = true
 	if ifChange {
-
 		uids := QueryAllChatId()
 		// 发生tg提醒
 		fmt.Println(uids)
-
 		for _, uid := range uids {
 			fmt.Printf("[*] new pool, try to alert user: %d", uid)
-			TgBotSendMsgToUser(uid, smsg)
+			TgBotSendImgToUser(uid)
 		}
 		// 记录本次md5
 		WriteStrInFile(SyrupPools.MD5)

@@ -4,10 +4,7 @@ import (
 	"cake-syrup-pools-lover/util"
 	"fmt"
 	tb "gopkg.in/tucnak/telebot.v2"
-	//"github.com/tucnak/telebot"
-	"image"
 	"log"
-	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -51,12 +48,15 @@ func TgBotStartServer() {
 		b.Send(m.Sender, msgStr)
 	})
 
-	// 查询最新糖浆池-发送糖浆池日收益的饼状图
+	// 查询糖浆池日收益的饼状图
 	b.Handle("/syrup_pools_pie", func(m *tb.Message) {
-		//poolMsg := QuerySyrupPoolStr("pools_shortly")
-		AllConfig := GetConfig()
-		picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
-		img := &tb.Photo{File: tb.FromDisk(picSavePath)}
+		img := getPieImg()
+		b.Send(m.Sender, img)
+	})
+
+	// 查询糖浆池所有信息的表格图
+	b.Handle("/syrup_pools_table", func(m *tb.Message) {
+		img := getTableImg()
 		b.Send(m.Sender, img)
 	})
 
@@ -70,20 +70,20 @@ func TgBotStartServer() {
 	b.Start()
 }
 
-func getImageDimension(imagePath string) (int, int, error) {
-	file, err := os.Open(imagePath)
-	if err != nil {
-		return 0, 0, err
-	}
-	defer file.Close()
-
-	image, _, err := image.DecodeConfig(file)
-	if err != nil {
-		return 0, 0, err
-	}
-	return image.Width, image.Height, nil
+func getPieImg() *tb.Photo {
+	AllConfig := GetConfig()
+	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
+	img := &tb.Photo{File: tb.FromDisk(picSavePath)}
+	return img
+}
+func getTableImg() *tb.Photo {
+	AllConfig := GetConfig()
+	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/table.png")
+	img := &tb.Photo{File: tb.FromDisk(picSavePath)}
+	return img
 }
 
+// @title TgBot主动发送信息给user
 func TgBotSendMsgToUser(userId int, msgStr string) {
 	AllConfig := GetConfig()
 	b, err := tb.NewBot(tb.Settings{
@@ -104,6 +104,30 @@ func TgBotSendMsgToUser(userId int, msgStr string) {
 	b.Send(&user, msgStr)
 }
 
+// @title TgBot主动发送图片给user
+func TgBotSendImgToUser(userId int) {
+	AllConfig := GetConfig()
+	b, err := tb.NewBot(tb.Settings{
+		// You can also set custom API URL.
+		// If field is empty it equals to "https://api.telegram.org".
+		//URL: "http://195.129.111.17:8012",
+		Token:  AllConfig.TgToken,
+		Poller: &tb.LongPoller{Timeout: 10 * time.Second},
+	})
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	var user tb.User
+	user.ID = int64(userId)
+	pieImg := getPieImg()
+	tableImg := getTableImg()
+	b.Send(&user, pieImg)
+	b.Send(&user, tableImg)
+}
+
 // @title 生成完整的通知模板
 // @return msgStr string "完整的糖浆池信息"
 func (SyrupPools *SyrupPools) GenerateTgFullMsg() string {
@@ -114,7 +138,7 @@ func (SyrupPools *SyrupPools) GenerateTgFullMsg() string {
 		msgStr = msgStr + "===============\n"
 		sPool := SyrupPools.SyPools[index]
 		// 保留4位小数
-		sPoolStr := fmt.Sprintf("SyrupPool ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("RewardToken Name/Symbol:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("RewardToken Price(USD):   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("RewardToken ContractAddr:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("Daily/Weekly/Monthly/Yearly Profit(USD)(Per100Cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("SyrupPool TotalStaked Cake:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("SyrupPool EndTime:   %s", sPool.EndTime) + "\n"
+		sPoolStr := fmt.Sprintf("SyrupPool ID:   %s", sPool.SousId) + "\n" + fmt.Sprintf("RewardToken Name/Symbol:   %s/%s", sPool.Token.Name, sPool.Token.Symbol) + "\n" + fmt.Sprintf("RewardToken Price(USD):   %s", util.BigFloat4Decimal(sPool.Token.Price.String())) + "\n" + fmt.Sprintf("RewardToken ContractAddr:   %s", sPool.Token.ContractAddr) + "\n" + fmt.Sprintf("Daily/Weekly/Monthly/Yearly Profit(USD)(Per100Cake):   %s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())) + "\n" + fmt.Sprintf("SyrupPool TotalStaked Cake:   %s", util.BigFloat4Decimal(sPool.StakedCake)) + "\n" + fmt.Sprintf("SyrupPool StartTime/EndTime:   %s/%s", sPool.StartTime, sPool.EndTime) + "\n"
 		msgStr = msgStr + sPoolStr
 	}
 	return msgStr

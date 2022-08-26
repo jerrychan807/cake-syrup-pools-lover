@@ -16,9 +16,7 @@ func ParsePoolsInfo(content string) ([]string, []string, []string, []string) {
 	//fmt.Printf("[*] earningTokens: %s\n", earningTokens)
 	//fmt.Printf("[*] contractAddrs: %s\n", contractAddrs)
 	//fmt.Printf("[*] tokenPerBlocks: %s\n", tokenPerBlocks)
-
 	return sousIds, earningTokens, contractAddrs, tokenPerBlocks
-
 }
 
 func parseSousIdField(content string) []string {
@@ -32,7 +30,7 @@ func parseSousIdField(content string) []string {
 }
 
 func parseEarningTokenField(content string) []string {
-	var re = regexp.MustCompile(`(?m)earningToken: serializedTokens\.(\S*),`)
+	var re = regexp.MustCompile(`(?m)earningToken: bscTokens\.(\S*),`)
 	var tempStrs []string
 	for _, match := range re.FindAllString(content, -1) {
 		tempStr := strings.Replace(match, "earningToken: serializedTokens.", "", 1)

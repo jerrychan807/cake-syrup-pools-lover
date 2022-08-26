@@ -32,7 +32,6 @@ func GetSerializedPoolConfigStr(url string) string {
 		match := re.FindString(string(r.Body))
 		//fmt.Println(match, "found at index", i)
 		serializedPoolConfigStr = match
-
 	})
 
 	c.Visit(url)
@@ -64,14 +63,14 @@ func GetSyrupPoolsByBscToolsWeb(url string) string {
 	return serializedPoolConfigStr
 }
 
-// @title 保存rose PieChart图片
+// @title 保存html渲染后的图片
 // @description 使用本地的http和html2img服务,生成图片,保存在download文件夹中
-func GetSyrupPoolsDailyEarnPieImage(url string) string {
+func GetHTML2Image(url string, picPath string) string {
 	//pic := base
 	//idx := strings.LastIndex(url, "/")
 	AllConfig := GetConfig()
-	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
-
+	//picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
+	picSavePath := filepath.Join(AllConfig.ProjectFolder, picPath)
 	v, err := http.Get(url)
 	if err != nil {
 		fmt.Printf("Http get [%v] failed! %v", url, err)

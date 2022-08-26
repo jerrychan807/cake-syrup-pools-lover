@@ -49,8 +49,19 @@ func (syrupPool *SyrupPool) GetSyrupPoolInfo(syrupPoolAddr string) {
 	client := getRpcClient(AllConfig.RpcUrl)
 	contractAddr := common.HexToAddress(syrupPoolAddr)
 	syrupPoolIns := GetSyrupPoolContractInstance(contractAddr, client)
+	blockNumberNow := GetBlockNumNow()
 	// 开始区块数
 	syrupPool.StartBlockNum = GetSyrupPoolStartBlock(syrupPoolIns)
+	// 糖浆池已开始
+	var StartBlockNumUTCTime time.Time
+	if blockNumberNow > syrupPool.StartBlockNum{
+		// 开始区块的utc8时间
+		StartBlockNumUTCTime = CalcPastBlockNumTime(syrupPool.StartBlockNum)
+	}else { // 糖浆池未开始
+		StartBlockNumUTCTime = CalcFutureBlockNumTime(syrupPool.StartBlockNum)
+	}
+	syrupPool.StartTime = StartBlockNumUTCTime.Format("2006-01-02 15:04:05")
+
 	// 奖励结束区块数
 	syrupPool.BonusEndBlockNum = GetSyrupPoolBonusEndBlock(syrupPoolIns)
 	// 奖励结束utc8时间
@@ -201,6 +212,22 @@ func CalcFutureBlockNumTime(futureBlockNum uint64) time.Time {
 	FutureBlockNumUTCTime := blocktimeNow.Add(time.Second * time.Duration(diffSeconds))
 	//fmt.Println(FutureBlockNumUTCTime)
 	return FutureBlockNumUTCTime
+}
+
+// @title 计算过去区块数的UTC8时间
+// @description
+func CalcPastBlockNumTime(pastBlockNum uint64) time.Time {
+	blockNumberNow := GetBlockNumNow()
+	tUnix := GetBlockTime(blockNumberNow)
+	blocktimeNow := time.Unix(int64(tUnix), 0)
+	// 计算区块数之差
+	diffBlockNum := blockNumberNow - pastBlockNum
+	// 约3s一个block
+	diffSeconds := diffBlockNum * uint64(3)
+	pastSeconds := -(time.Second * time.Duration(diffSeconds))
+	PastBlockNumUTCTime := blocktimeNow.Add(pastSeconds)
+	//fmt.Println(PastBlockNumUTCTime)
+	return PastBlockNumUTCTime
 }
 
 // @title 通过blockNum查询区块时间戳

@@ -38,7 +38,7 @@ func CreatePieChart(SyrupPools *SyrupPools) {
 	pie.SetGlobalOptions(
 		charts.WithTitleOpts(
 			opts.Title{
-				Title:    "Syrup Pools Daily Earn",
+				Title:    "Syrup Pools Daily Earn(USD)",
 				Subtitle: nowStr,
 			},
 		),
@@ -63,5 +63,6 @@ func CreatePieChart(SyrupPools *SyrupPools) {
 	AllConfig := GetConfig()
 	htmlFilePath := filepath.Join(AllConfig.ProjectFolder, htmlFileName)
 	f, _ := os.Create(htmlFilePath)
+	defer f.Close()
 	_ = pie.Render(f)
 }
