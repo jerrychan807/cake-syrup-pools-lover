@@ -213,26 +213,6 @@ func GetPancakeApiJsonData(apiFullUrl string) string {
 	return jsonData
 }
 
-// @title 查询Token的liquidity信息
-// @param shitTokenAddr string "代币合约地址"
-// TODO:
-/*
-func GetTokenLiquidity(shitTokenAddr string) string {
-
-	var input = `{"updated_at":1660728906554,"data":{"name":"Meta Apes Peel","symbol":"PEEL","price":"0.126858198411895729756863679343","price_BNB":"0.0004009516337587390261547463939483"}}`
-
-	var p pancakeApiJson
-	// 解析json数据到post中
-	err := json.Unmarshal([]byte(input), &p)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Api Json Response: %+v", p)
-	return p.PancakeApiToken.Price
-}
-*/
-
 // @title 查询Erc20Token的信息
 func QueryErc20TokenInfo(tokenAddr string) Token {
 	var Erc20Token Token

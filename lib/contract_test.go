@@ -15,13 +15,13 @@ import (
 //	}
 //}
 
-func TestQueryErc20TokenInfo(t *testing.T) {
-	Erc20Token := QueryErc20TokenInfo()
-	t.Logf("[*] Erc20Token: %+v \n", Erc20Token)
-	if Erc20Token == (Token{}) {
-		t.Error("Erc20Token Struct is empty")
-	}
-}
+//func TestQueryErc20TokenInfo(t *testing.T) {
+//	Erc20Token := QueryErc20TokenInfo()
+//	t.Logf("[*] Erc20Token: %+v \n", Erc20Token)
+//	if Erc20Token == (Token{}) {
+//		t.Error("Erc20Token Struct is empty")
+//	}
+//}
 
 func TestCalcBNBPriceByPancakeSwap(t *testing.T) {
 	amountOut := CalcBNBPriceByPancakeSwap()
@@ -55,6 +55,7 @@ func TestCalcTokenPriceByPancakeSwap(t *testing.T) {
 
 }
 
+/*
 func TestGetTokenPriceByPancakeApi(t *testing.T) {
 	var input = `{"updated_at":1660728906554,"data":{"name":"Meta Apes Peel","symbol":"PEEL","price":"0.126858198411895729756863679343","price_BNB":"0.0004009516337587390261547463939483"}}`
 
@@ -62,3 +63,4 @@ func TestGetTokenPriceByPancakeApi(t *testing.T) {
 	shitTokenPriceUsd := GetTokenPriceByPancakeApi(input)
 	t.Logf("[*] shitTokenPriceUsd: %+v \n", shitTokenPriceUsd)
 }
+*/

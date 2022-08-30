@@ -137,7 +137,7 @@ func (SyrupPools *SyrupPools) UpdateSyrupPoolsTokenInfo() {
 		fmt.Println("=================================")
 		SyrupPools.SyPools[index].GetSyrupPoolInfo(SyrupPools.SyPools[index].ContractAddr)
 
-		// 获取token价格
+		// 通过PancakeswapApi 获取token价格
 		apiBaseUrl := "https://api.pancakeswap.info/api/v2/tokens/"
 		apiFullUrl := fmt.Sprintf("%s%s", apiBaseUrl, SyrupPools.SyPools[index].Token.ContractAddr)
 		//fmt.Println("[*] apiFullUrl", apiFullUrl)
@@ -151,6 +151,20 @@ func (SyrupPools *SyrupPools) UpdateSyrupPoolsTokenInfo() {
 		SyrupPools.SyPools[index].Token.Symbol = tokenSymbol
 
 		fmt.Printf("[*] syrupPool.Token.Price:%s \n", SyrupPools.SyPools[index].Token.Price.String())
+
+		// 通过DexGuruApi 获取token市场信息
+		jsonData1 := GetDexGuruApiJsonData(SyrupPools.SyPools[index].Token.ContractAddr)
+		p := GetTokenInfoByDexguru(jsonData1)
+		SyrupPools.SyPools[index].Token.Txns24h = p.DexguruApiToken[0].Txns24h
+		SyrupPools.SyPools[index].Token.Txns24hChange = p.DexguruApiToken[0].Txns24hChange
+		SyrupPools.SyPools[index].Token.Volume24hUSD = p.DexguruApiToken[0].Volume24hUSD
+		SyrupPools.SyPools[index].Token.VolumeUSDChange24h = p.DexguruApiToken[0].VolumeUSDChange24h
+		SyrupPools.SyPools[index].Token.LiquidityUSD = p.DexguruApiToken[0].LiquidityUSD
+		SyrupPools.SyPools[index].Token.LiquidityUSDChange24h = p.DexguruApiToken[0].LiquidityUSDChange24h
+		SyrupPools.SyPools[index].Token.PriceUSDChange24h = p.DexguruApiToken[0].PriceUSDChange24h
+		SyrupPools.SyPools[index].Token.MarketCap = p.DexguruApiToken[0].MarketCap
+		SyrupPools.SyPools[index].Token.MarketCapChange24h = p.DexguruApiToken[0].MarketCapChange24h
+		SyrupPools.SyPools[index].Token.LogoURI = p.DexguruApiToken[0].LogoURI[0]
 
 		// 100cake daily earn usd 每日利润usd
 		SyrupPools.SyPools[index].CalcRewadTokenDailyEarn()

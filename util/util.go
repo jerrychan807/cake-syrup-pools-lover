@@ -165,6 +165,18 @@ func BigFloat4Decimal(s1 string) string {
 	return sprintf
 }
 
+// @title float64转换为百分比%,保留两位小数
+func Float64ToPercentage(value float64) string {
+	return strconv.FormatFloat(value*100, 'f', 2, 64) + "%"
+}
+
+// @title float64转换字符串,保留x位小数
+// @param value float64 "浮点数"
+// @param prec int "保留小数位"
+func Float64ToStr(value float64, prec int) string {
+	return strconv.FormatFloat(value, 'f', prec, 64)
+}
+
 // @title 字符串生成md5字符串
 func Md5V(str string) string {
 	h := md5.New()

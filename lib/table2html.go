@@ -6,6 +6,7 @@ import (
 	"github.com/klarkxy/gohtml"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -39,13 +40,23 @@ func GenerateSyrupPoolTableHtml(SyrupPools *SyrupPools) {
 	// 设置表头
 	title := table.Tag("tr")
 	title.Tag("th").Text("SyrupPool ID")
-	title.Tag("th").Text("RewardToken Name/Symbol")
-	title.Tag("th").Text("RewardToken Price(USD)")
+	title.Tag("th").Text("Token Name/Symbol")
+	title.Tag("th").Text("Token Price(USD)")
+	title.Tag("th").Text("Token PriceUSDChange24h")
 	//title.Tag("th").Text("RewardToken ContractAddr")
 	title.Tag("th").Text("Daily/Weekly/Monthly/Yearly Profit(USD)(Per100Cake)")
 	title.Tag("th").Text("SyrupPool TotalStaked Cake")
 	title.Tag("th").Text("SyrupPool StartTime")
 	title.Tag("th").Text("SyrupPool EndTime")
+	title.Tag("th").Text("Token Txns24h")
+	title.Tag("th").Text("Token Txns24hChange")
+	title.Tag("th").Text("Token Volume24hUSD")
+	title.Tag("th").Text("Token VolumeUSDChange24h")
+	title.Tag("th").Text("Token LiquidityUSD")
+	title.Tag("th").Text("Token LiquidityUSDChange24h")
+	title.Tag("th").Text("Token MarketCap")
+	//title.Tag("th").Text("Token MarketCapChange24h")
+	//title.Tag("th").Text("Token LogoURI")
 	// 设置中文表头
 	//cntitle := table.Tag("tr")
 	//cntitle.Tag("th").Text("糖浆池ID")
@@ -63,11 +74,21 @@ func GenerateSyrupPoolTableHtml(SyrupPools *SyrupPools) {
 		tr.Tag("th").Text(sPool.SousId)
 		tr.Tag("th").Text(fmt.Sprintf("%s/%s", sPool.Token.Name, sPool.Token.Symbol))
 		tr.Tag("th").Text(util.BigFloat4Decimal(sPool.Token.Price.String()))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToPercentage(sPool.Token.PriceUSDChange24h)))
 		//tr.Tag("th").Text(sPool.Token.ContractAddr)
 		tr.Tag("th").Text(fmt.Sprintf("%s/%s/%s/%s", util.BigFloat4Decimal(sPool.HundredCakeDailyEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeWeekEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeMonthEarn.String()), util.BigFloat4Decimal(sPool.HundredCakeYearEarn.String())))
 		tr.Tag("th").Text(fmt.Sprintf("%s", util.BigFloat4Decimal(sPool.StakedCake)))
 		tr.Tag("th").Text(fmt.Sprintf("%s", sPool.StartTime))
 		tr.Tag("th").Text(fmt.Sprintf("%s", sPool.EndTime))
+		tr.Tag("th").Text(fmt.Sprintf("%s", strconv.Itoa(sPool.Token.Txns24h)))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToPercentage(sPool.Token.Txns24hChange)))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToStr(sPool.Token.Volume24hUSD, 0)))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToPercentage(sPool.Token.VolumeUSDChange24h)))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToStr(sPool.Token.LiquidityUSD, 0)))
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToPercentage(sPool.Token.LiquidityUSDChange24h)))
+
+		tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToStr(sPool.Token.MarketCap, 0)))
+		//tr.Tag("th").Text(fmt.Sprintf("%s", util.Float64ToPercentage(sPool.Token.MarketCapChange24h)))
 	}
 
 	// 写进html文件

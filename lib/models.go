@@ -48,14 +48,22 @@ type SyrupPool struct {
 
 // Token 糖浆池奖励Token信息
 type Token struct {
-	ContractAddr string     // Token合约地址
-	Name         string     // Token名字
-	Symbol       string     // Token符号
-	Decimals     uint8      // Token小数位
-	Price        *big.Float // 价格(usd)
-	//TotalLiquidity            *big.Int   // Liquidity(usd)
-	//DayPriceChangePercentage  uint       // 1日涨跌幅百分比
-	//WeekPriceChangePercentage uint       // 7日涨跌幅百分比
+	ContractAddr          string     // Token合约地址
+	Name                  string     // Token名字
+	Symbol                string     // Token符号
+	Decimals              uint8      // Token小数位
+	Price                 *big.Float // 价格(usd)
+	Txns24h               int        // 买卖交易数量
+	Txns24hChange         float64    // 买卖交易数量日变化量
+	Volume24hUSD          float64    // 日交易额 eg:492295.9654380776
+	VolumeUSDChange24h    float64    // 日交易额日变化量
+	LiquidityUSD          float64    // 流动性总值 eg:4879945.6020368
+	LiquidityUSDChange24h float64    // 流动性总值日变化量
+	PriceUSD              float64    // 价格
+	PriceUSDChange24h     float64    // 日价格变化
+	MarketCap             float64    // 市值
+	MarketCapChange24h    float64    // 市值日变化量
+	LogoURI               string
 }
 
 type PancakeApiJson struct {
@@ -68,4 +76,22 @@ type PancakeApiToken struct {
 	Symbol   string `json:"symbol"`
 	Price    string `json:"price"`
 	PriceBNB string `json:"price_BNB"`
+}
+
+type DexguruApiJson struct {
+	DexguruApiToken []DexguruApiToken `json:"data"`
+}
+
+type DexguruApiToken struct {
+	Txns24h               int      `json:"txns24h"`               // 买卖交易数量
+	Txns24hChange         float64  `json:"txns24hChange"`         // 买卖交易数量日变化量
+	Volume24hUSD          float64  `json:"volume24hUSD"`          // 日交易额 eg:492295.9654380776
+	VolumeUSDChange24h    float64  `json:"volumeUSDChange24h"`    // 日交易额日变化量
+	LiquidityUSD          float64  `json:"liquidityUSD"`          // 流动性总值 eg:4879945.6020368
+	LiquidityUSDChange24h float64  `json:"liquidityUSDChange24h"` // 流动性总值日变化量
+	PriceUSD              float64  `json:"priceUSD"`              // 价格
+	PriceUSDChange24h     float64  `json:"priceUSDChange24h"`     // 日价格变化 eg:-0.04544822975053079
+	MarketCap             float64  `json:"marketCap"`             // 市值
+	MarketCapChange24h    float64  `json:"marketCapChange24h"`    // 市值日变化量
+	LogoURI               []string `json:"logoURI"`               // logo图标资源文件
 }
