@@ -106,13 +106,16 @@ func (cli *CommandLine) updateSyrupPool() {
 	SyrupPools.UpdateSyrupPoolsTokenInfo()
 
 	// 生成piechart html文件
-	CreatePieChart(&SyrupPools)
+	CreateRosePieChart(&SyrupPools)
+	CreateStakedPieChart(&SyrupPools)
 	// 生成糖浆池信息表格html文件
 	GenerateSyrupPoolTableHtml(&SyrupPools)
 	piePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/pie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/pie.png")
+	stakedPiePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/stakedPie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/stakedPie.png")
 	tablePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/table.html", "/download/table.png")
 
 	fmt.Printf("[*] Get SyrupPools DailyEarn Pie Image : %s \n", piePicSavePath)
+	fmt.Printf("[*] Get SyrupPools Staked Cake Pie Image : %s \n", stakedPiePicSavePath)
 	fmt.Printf("[*] Get SyrupPools table Image : %s \n", tablePicSavePath)
 	// 生成通知信息
 	msg := SyrupPools.GenerateTgFullMsg()
@@ -123,11 +126,12 @@ func (cli *CommandLine) updateSyrupPool() {
 	// 简要信息模板
 	//SaveSyrupPoolStr("pools_shortly", smsg)
 
-	fmt.Println("$$$$$$$$$$$ smsg $$$$$$$$$$$")
-	fmt.Println(msg)
+	//fmt.Println("$$$$$$$$$$$ smsg $$$$$$$$$$$")
+	//fmt.Println(msg)
 
 	// 糖浆池配置信息更新(合约地址有变动),有新的糖浆池
 	// ifChange = true
+	fmt.Printf("[*] need to alert user: %b \n", ifChange)
 	if ifChange {
 		uids := QueryAllChatId()
 		// 发生tg提醒

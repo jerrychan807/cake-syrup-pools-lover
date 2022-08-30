@@ -49,14 +49,20 @@ func TgBotStartServer() {
 	})
 
 	// 查询糖浆池日收益的饼状图
-	b.Handle("/syrup_pools_pie", func(m *tb.Message) {
-		img := getPieImg()
+	b.Handle("/syrup_pools_daily_earn_pie", func(m *tb.Message) {
+		img := getImg("/download/pie.png")
 		b.Send(m.Sender, img)
 	})
 
 	// 查询糖浆池所有信息的表格图
 	b.Handle("/syrup_pools_table", func(m *tb.Message) {
-		img := getTableImg()
+		img := getImg("/download/table.png")
+		b.Send(m.Sender, img)
+	})
+
+	// 查询糖浆池总质押cake的饼状图
+	b.Handle("/syrup_pools_staked_cake_pie", func(m *tb.Message) {
+		img := getImg("/download/stakedPie.png")
 		b.Send(m.Sender, img)
 	})
 
@@ -70,15 +76,11 @@ func TgBotStartServer() {
 	b.Start()
 }
 
-func getPieImg() *tb.Photo {
+// @title 获取图片
+// @param relativePath string "相对路径下的图片"
+func getImg(relativePath string) *tb.Photo {
 	AllConfig := GetConfig()
-	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/pie.png")
-	img := &tb.Photo{File: tb.FromDisk(picSavePath)}
-	return img
-}
-func getTableImg() *tb.Photo {
-	AllConfig := GetConfig()
-	picSavePath := filepath.Join(AllConfig.ProjectFolder, "/download/table.png")
+	picSavePath := filepath.Join(AllConfig.ProjectFolder, relativePath)
 	img := &tb.Photo{File: tb.FromDisk(picSavePath)}
 	return img
 }
@@ -122,8 +124,8 @@ func TgBotSendImgToUser(userId int) {
 
 	var user tb.User
 	user.ID = int64(userId)
-	pieImg := getPieImg()
-	tableImg := getTableImg()
+	pieImg := getImg("/download/pie.png")
+	tableImg := getImg("/download/table.png")
 	b.Send(&user, pieImg)
 	b.Send(&user, tableImg)
 }

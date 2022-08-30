@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -171,7 +172,7 @@ func Md5V(str string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-// 检查文件地址下文件是否存在的函数
+// @title 检查文件地址下文件是否存在的函数
 func FileExists(fileAddr string) bool {
 	if _, err := os.Stat(fileAddr); os.IsNotExist(err) {
 		return false
@@ -179,9 +180,15 @@ func FileExists(fileAddr string) bool {
 	return true
 }
 
-// 错误处理函数
+// @title 错误处理函数
 func Handle(err error) {
 	if err != nil {
 		log.Panic(err)
 	}
+}
+
+// @title 错误处理函数
+func GetNowTimeStr() string {
+	nowStr := time.Now().Format("2006-01-02 15:04:05") //获取当前时间
+	return nowStr
 }
