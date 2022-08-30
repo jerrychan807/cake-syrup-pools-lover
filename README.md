@@ -63,7 +63,8 @@ Blog: [Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录](ht
 ### Use My Tg bot
 
 1. https://t.me/J_bsc_bot
-2. Click Menu Button
+2. Click Menu Button  
+    ![20220826162537](https://raw.githubusercontent.com/jerrychan807/imggg/master/image/20220826162537.png)
 
 ### Build Your Own Tg bot
 
@@ -100,6 +101,16 @@ Blog: [Project-cake-syrup-pools-lover-PancakeSwap糖浆池TgBot-开发记录](ht
    ```sh
    go build main.go
    ./main
+   ```
+   ```sh
+   ./main 
+    Pancake Syrup Pool Lover, usage is as follows:
+    --------------------------------------------------------------------------------------------------------------
+    start_tg_server  ----> Start tg bot Server
+    start_http_server  ----> Start http Server
+    update_pool_msg  ----> Update Syrup Pool Info,try to send alert to users
+    onlytest  ----> onlytest
+    --------------------------------------------------------------------------------------------------------------
    ```
    
 
