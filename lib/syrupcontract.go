@@ -54,10 +54,10 @@ func (syrupPool *SyrupPool) GetSyrupPoolInfo(syrupPoolAddr string) {
 	syrupPool.StartBlockNum = GetSyrupPoolStartBlock(syrupPoolIns)
 	// 糖浆池已开始
 	var StartBlockNumUTCTime time.Time
-	if blockNumberNow > syrupPool.StartBlockNum{
+	if blockNumberNow > syrupPool.StartBlockNum {
 		// 开始区块的utc8时间
 		StartBlockNumUTCTime = CalcPastBlockNumTime(syrupPool.StartBlockNum)
-	}else { // 糖浆池未开始
+	} else { // 糖浆池未开始
 		StartBlockNumUTCTime = CalcFutureBlockNumTime(syrupPool.StartBlockNum)
 	}
 	syrupPool.StartTime = StartBlockNumUTCTime.Format("2006-01-02 15:04:05")
@@ -97,7 +97,7 @@ func (syrupPool *SyrupPool) CalcRewadTokenDailyEarn() {
 	rewardDailyEarnUsd := new(big.Float)
 	rewardDailyEarnUsd = rewardDailyEarnUsd.Mul(rewardDailyTokenNum, syrupPool.Token.Price)
 	syrupPool.RewardDailyEarnUsd = rewardDailyEarnUsd
-	fmt.Printf("%s","[*] rewardDailyEarnUsd  ")
+	fmt.Printf("%s", "[*] rewardDailyEarnUsd  ")
 	fmt.Println(rewardDailyEarnUsd)
 	//return rewardDailyEarnUsd
 }
@@ -118,7 +118,7 @@ func (syrupPool *SyrupPool) CalcHundredCakeDailyEarn() {
 	rate := new(big.Float)
 	rate = rate.Quo(hundredCake, stakedCake.Add(stakedCake, hundredCake))
 	// 糖浆池100cake每日可赚取多少u
-	HundredCakeDailyEarn := syrupPool.RewardDailyEarnUsd.Mul(syrupPool.RewardDailyEarnUsd, rate)
+	HundredCakeDailyEarn := new(big.Float).Mul(syrupPool.RewardDailyEarnUsd, rate)
 	syrupPool.HundredCakeDailyEarn = HundredCakeDailyEarn
 	// 每周可赚取多少u
 	WeekFloat, _ := new(big.Float).SetPrec(prec).SetString("7")
@@ -132,9 +132,8 @@ func (syrupPool *SyrupPool) CalcHundredCakeDailyEarn() {
 	YearFloat, _ := new(big.Float).SetPrec(prec).SetString("365")
 	tmp = new(big.Float).SetPrec(prec)
 	syrupPool.HundredCakeYearEarn = tmp.Mul(HundredCakeDailyEarn, YearFloat)
-	fmt.Println("%s","[*] HundredCakeDailyEarn  ")
+	fmt.Println("%s", "[*] HundredCakeDailyEarn  ")
 	fmt.Println(HundredCakeDailyEarn)
-
 }
 
 // @title 查询糖浆池合约里的StartBlock 开始区块数

@@ -40,6 +40,18 @@ func GenerateStakedCakePieItems(SyrupPools *SyrupPools) []opts.PieData {
 	return items
 }
 
+// @title 生成糖浆池日产量美元pieChart绘制所需数据结构
+func GeneratePoolDailyYieldPieItems(SyrupPools *SyrupPools) []opts.PieData {
+	items := make([]opts.PieData, 0)
+	for index, _ := range SyrupPools.SyPools {
+		sPool := SyrupPools.SyPools[index]
+		items = append(items, opts.PieData{
+			Name:  sPool.Token.Symbol,
+			Value: util.BigFloat4Decimal(sPool.RewardDailyEarnUsd.String())})
+	}
+	return items
+}
+
 // @title 生成饼状图的html文件
 func CreateRosePieChart(SyrupPools *SyrupPools) {
 	// create a new pie instance
@@ -100,6 +112,36 @@ func CreateStakedPieChart(SyrupPools *SyrupPools) {
 		)
 
 	htmlFileName := "/public/stakedPie.html"
+	AllConfig := GetConfig()
+	htmlFilePath := filepath.Join(AllConfig.ProjectFolder, htmlFileName)
+	f, _ := os.Create(htmlFilePath)
+	defer f.Close()
+	_ = pie.Render(f)
+}
+
+// @title 生成各糖浆池日产量美元饼状图的html文件
+func CreatePoolDailyYieldPieChart(SyrupPools *SyrupPools) {
+	// create a new pie instance
+	pie := charts.NewPie()
+	nowStr := util.GetNowTimeStr()
+	pie.SetGlobalOptions(
+		charts.WithTitleOpts(
+			opts.Title{
+				Title:    "SyrupPools Daily Yield PerDay(USD)",
+				Subtitle: nowStr,
+			},
+		),
+	)
+	pie.SetSeriesOptions()
+	pie.AddSeries("pie", GeneratePoolDailyYieldPieItems(SyrupPools)).
+		SetSeriesOptions(charts.WithLabelOpts(
+			opts.Label{
+				Show:      true,
+				Formatter: "{b}: {c}",
+			}),
+		)
+
+	htmlFileName := "/public/dailyYieldPie.html"
 	AllConfig := GetConfig()
 	htmlFilePath := filepath.Join(AllConfig.ProjectFolder, htmlFileName)
 	f, _ := os.Create(htmlFilePath)

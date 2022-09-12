@@ -66,6 +66,12 @@ func TgBotStartServer() {
 		b.Send(m.Sender, img)
 	})
 
+	// 查询糖浆池日产量Usd的饼状图
+	b.Handle("/syrup_pools_daily_yield_pie", func(m *tb.Message) {
+		img := getImg("/download/dailyYieldPie.png")
+		b.Send(m.Sender, img)
+	})
+
 	// 查询最新糖浆池-完整信息
 	b.Handle("/syrup_pools_full", func(m *tb.Message) {
 		poolMsg := QuerySyrupPoolStr("pools")

@@ -166,8 +166,8 @@ func (SyrupPools *SyrupPools) UpdateSyrupPoolsTokenInfo() {
 		SyrupPools.SyPools[index].Token.MarketCapChange24h = p.DexguruApiToken[0].MarketCapChange24h
 		SyrupPools.SyPools[index].Token.LogoURI = p.DexguruApiToken[0].LogoURI[0]
 
-		// 100cake daily earn usd 每日利润usd
 		SyrupPools.SyPools[index].CalcRewadTokenDailyEarn()
+		// 100cake daily earn usd 每日利润usd
 		SyrupPools.SyPools[index].CalcHundredCakeDailyEarn()
 		fmt.Printf("[*] syrupPool %+v \n", SyrupPools.SyPools[index])
 		fmt.Println("=================================")

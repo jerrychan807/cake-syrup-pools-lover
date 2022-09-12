@@ -108,15 +108,20 @@ func (cli *CommandLine) updateSyrupPool() {
 	// 生成piechart html文件
 	CreateRosePieChart(&SyrupPools)
 	CreateStakedPieChart(&SyrupPools)
+	CreatePoolDailyYieldPieChart(&SyrupPools)
 	// 生成糖浆池信息表格html文件
 	GenerateSyrupPoolTableHtml(&SyrupPools)
 	piePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/pie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/pie.png")
 	stakedPiePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/stakedPie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/stakedPie.png")
+	dailyYieldPiePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/dailyYieldPie.html&customClip=true&clipX=0&clipY=0&clipWidth=900&clipHeight=500&clipScale=2&format=jpeg&Quality=80", "/download/dailyYieldPie.png")
+
 	tablePicSavePath := GetHTML2Image("http://127.0.0.1:8080/convert/html2image?u=doctron&p=lampnick&url=http://127.0.0.1:9090/table.html", "/download/table.png")
 
 	fmt.Printf("[*] Get SyrupPools DailyEarn Pie Image : %s \n", piePicSavePath)
 	fmt.Printf("[*] Get SyrupPools Staked Cake Pie Image : %s \n", stakedPiePicSavePath)
+	fmt.Printf("[*] Get SyrupPools daily Yield Pie Image : %s \n", dailyYieldPiePicSavePath)
 	fmt.Printf("[*] Get SyrupPools table Image : %s \n", tablePicSavePath)
+
 	// 生成通知信息
 	msg := SyrupPools.GenerateTgFullMsg()
 	//smsg := SyrupPools.GenerateTgShortlyMsg()
