@@ -48,7 +48,7 @@ func CreateRosePieChart(SyrupPools *SyrupPools) {
 	pie.SetGlobalOptions(
 		charts.WithTitleOpts(
 			opts.Title{
-				Title:    "Syrup Pools Daily Earn(USD)",
+				Title:    "Syrup Pools Daily Earn Per100Cake(USD)",
 				Subtitle: nowStr,
 			},
 		),
