@@ -204,3 +204,12 @@ func GetNowTimeStr() string {
 	nowStr := time.Now().Format("2006-01-02 15:04:05") //获取当前时间
 	return nowStr
 }
+
+// @title 变化百分比<0为红色，>0为绿色
+func GetColorByChange(change float64) string {
+	if change < 0 {
+		return "red"
+	} else {
+		return "green"
+	}
+}
