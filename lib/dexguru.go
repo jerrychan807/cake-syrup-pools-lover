@@ -27,9 +27,9 @@ func GetTokenInfoByDexguru(jsonData string) DexguruApiJson {
 }
 
 // @title 获得通过DexGuru的Api返回的json数据
-func GetDexGuruApiJsonData(shitTokenAddr string) string {
+func GetDexGuruApiJsonData(shitTokenAddr string) (string, error) {
 	c := colly.NewCollector()
-
+	var statusCode int
 	var postData = fmt.Sprintf(`{"ids":["%s-bsc"],"network":"eth,optimism,bsc,polygon,fantom,arbitrum,celo,avalanche"}`, shitTokenAddr)
 
 	var jsonData string
@@ -41,10 +41,16 @@ func GetDexGuruApiJsonData(shitTokenAddr string) string {
 	// extract status code
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("[*] response received", r.StatusCode)
+		statusCode = r.StatusCode
 		jsonData = string(r.Body)
 		//fmt.Println(jsonData)
 	})
 
 	c.PostRaw("https://api.dex.guru/v3/tokens", []byte(postData))
-	return jsonData
+	if statusCode == 200 {
+		return jsonData, nil
+	} else {
+		return "", fmt.Errorf("http status code is %d", statusCode)
+	}
+
 }

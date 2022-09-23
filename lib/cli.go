@@ -106,6 +106,7 @@ func (cli *CommandLine) updateSyrupPool() {
 	SyrupPools.UpdateSyrupPoolsTokenInfo()
 
 	// 生成piechart html文件
+	fmt.Println("[*] try to generate chart html file")
 	CreateRosePieChart(&SyrupPools)
 	CreateStakedPieChart(&SyrupPools)
 	CreatePoolDailyYieldPieChart(&SyrupPools)
