@@ -82,7 +82,7 @@ func (cli *CommandLine) startHttpServerCmd() {
 }
 
 func (cli *CommandLine) updateSyrupPool() {
-	poolsTsxfileUrl := "https://raw.githubusercontent.com/pancakeswap/pancake-frontend/develop/src/config/constants/pools.tsx"
+	poolsTsxfileUrl := "https://raw.githubusercontent.com/pancakeswap/pancake-frontend/develop/apps/web/src/config/constants/pools.tsx"
 	fmt.Printf("[*] Request Url: %s\n", poolsTsxfileUrl)
 	// 获取pancake github上的糖浆池配置列表
 	serializedPoolConfigStr := GetSerializedPoolConfigStr(poolsTsxfileUrl)
